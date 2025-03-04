@@ -37,6 +37,23 @@ async function addParties(party) {
     console.error("Failed to add party:", error);
   }
 }
+async function deleteParty(partyId) {
+  try {
+    const response = await fetch(`${API_URL}/${partyId}`, {
+      method: "DELETE",
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Server error: ${response.status} - ${errorText}`);
+    }
+
+    console.log(`Party ${partyId} deleted successfully!`);
+    await getParties();
+  } catch (error) {
+    console.error("Failed to delete party:", error);
+  }
+}
 
 function renderParties() {
   const partyList = document.querySelector("#parties");
@@ -58,6 +75,7 @@ function renderParties() {
         <p><strong>Description:</strong> ${party.description}</p>
         <p><strong>Date:</strong> ${party.date}</p>
         <p><strong>Location:</strong> ${party.location}</p>
+        <button onclick="deleteParty('${party.id}')">Delete</button>
       `;
     return card;
   });
